@@ -16,7 +16,13 @@ def computeCost(X,y,theta):
     return np.sum(inner)/(2*len(X))
 
 '''this function calculates the differentiation of cost , and hence helps
-in reaching the best solution we could reach'''
+in reaching the best solution we could reach
+important parameters:
+    X - set of independent variables(here only 1)
+    y - dependent variable
+    alpha - Descending rate
+    theta - value of coefficients(like a and b for ax+b line)
+'''
 def func(X,y,theta):
     diff=np.dot(X,theta)-y
     m=len(X)
@@ -27,6 +33,7 @@ def gradient_descent(X,y,alpha):
     theta=np.matrix(np.array([0,0])).transpose()
     gradient=func(X,y,theta)
     iter=0
+    #descending to lower errors each and every time
     while not np.all(np.absolute(gradient))<=1e-4:
         theta=theta-alpha*gradient
         gradient=func(X,y,theta)
