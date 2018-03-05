@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-IMPLEMENTATION OF SIMPLE LINEAR REGRESSION USING GRADIENT DESCENT
+IMPLEMENTATION OF MULTIVARIATE LINEAR REGRESSION USING GRADIENT DESCENT
 
 this code is created by Abhinav Srivastava, just for the purpose of learning
 """
@@ -8,7 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-#global variable
+#global variable alpha
 alpha=0.01
 
 #it computes the total error using any regression line
@@ -31,7 +31,7 @@ def func(X,y,theta):
 
 #our function here performs the iteration for maximum 1000 times
 def gradient_descent(X,y,alpha):
-    theta=np.matrix(np.array([0,0])).transpose()
+    theta=np.matrix(np.full((1,X.shape[1]),0,dtype=int)).transpose()
     gradient=func(X,y,theta)
     iter=0
     #descending to lower errors each and every time
@@ -42,17 +42,18 @@ def gradient_descent(X,y,alpha):
         if iter>1000:
             break;
         print(computeCost(X,y,theta.T))
-    print("in iter "+str(iter)+"cost came as "+str(computeCost(X,y,theta.T)))
+    print("in iter "+str(iter)+" cost came as "+str(computeCost(X,y,theta.T)))
     return theta
 
-#importing data
-data=pd.read_csv("ex1data1.txt",names=["population","profit"])
 
-#data ploting
-data.plot(kind="scatter",x="population",y="profit")
+data=pd.read_csv("ex1data2.txt",names=["size","bedrooms","price"])
 
-#data description
-data.describe()
+#describing data
+data.head()
+
+"""As the data was not properly distributed , so if we would use the data without any normalization
+then the data with higher value will mainly determine the result, so normalizing"""
+data=(data-data.mean())/(data.std())
 
 #a row of ones inserted
 data.insert(0,'Ones',1)
@@ -63,29 +64,14 @@ y=data.iloc[:,-1]
 
 X=np.matrix(X.values)
 y=np.matrix(y.values)
-theta = np.matrix(np.array([0,0]))
+
+#finding the initial theta according to the dataset
+theta=np.full((1,X.shape[1]),0,dtype=int)
 
 y=y.transpose()
-#just for checking the initial cost
 print(computeCost(X,y,theta))
 
-#calculating the cost using gradient descent
 theta=gradient_descent(X,y,alpha)
-cost=computeCost(X,y,theta.T)
-print("the gradient descent gives an error of :"+str(cost))
-
-
-#making the graph
-x = np.linspace(data.population.min(), data.population.max(), 100)  
-f = theta[0, 0] + (theta[1, 0] * x)
-
-fig, ax = plt.subplots()  
-ax.plot(x, f, 'r', label='Prediction')  
-ax.scatter(data.population, data.profit, label='Traning Data')  
-ax.legend(loc=2)  
-ax.set_xlabel('population')  
-ax.set_ylabel('profit')  
-ax.set_title('Predicted Profit vs. Population Size')  
-
-
+ans=computeCost(X,y,theta.T)
+print("The minimum we get is "+str(ans))
 
